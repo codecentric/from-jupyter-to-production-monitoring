@@ -1,8 +1,8 @@
 from evidently import ColumnMapping
 from evidently.metric_preset import (
     ClassificationPreset,
+    TargetDriftPreset,
 )
-from evidently.metric_preset import TargetDriftPreset
 from evidently.report import Report
 import pandas as pd
 
@@ -42,13 +42,12 @@ def build_model_performance_report(
 def build_target_drift_report(
     reference_data: pd.DataFrame,
     current_data: pd.DataFrame,
-    column_mapping: ColumnMapping,
 ) -> str:
     target_drift_report = Report(metrics=[TargetDriftPreset()])
     target_drift_report.run(
         reference_data=reference_data,
         current_data=current_data,
-        column_mapping=column_mapping,
+        column_mapping=get_column_mapping(),
     )
     report_path = "reports/target_drift.html"
     target_drift_report.save_html(report_path)

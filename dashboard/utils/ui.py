@@ -67,6 +67,7 @@ def display_report(report: Text) -> Text:
         Text: Report content.
     """
 
-    components.html(report, width=1000, height=500, scrolling=True)
+    # components.html(report, width=1000, height=500, scrolling=True)
+    components.html(report, height=1000, scrolling=True)
 
     return report

@@ -78,9 +78,11 @@ def monitor_model_performance(
 
 
 @app.get("/monitor-target")
-def monitor_target_drift(window_size: int = 3000) -> FileResponse:
+def monitor_target_drift(
+    window_size: int = 3000, db_session: Session = Depends(get_db_session)
+) -> FileResponse:
     logging.info("Read current data")
-    current_data: pd.DataFrame = load_current_data(window_size)
+    current_data: pd.DataFrame = load_current_data(window_size, db_session)
 
     logging.info("Read reference data")
     reference_data = load_reference_data()
