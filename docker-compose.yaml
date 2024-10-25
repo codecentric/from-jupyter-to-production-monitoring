@@ -29,9 +29,6 @@ services:
     networks:
       - monitoring
 
-volumes:
-  monitoring_db_data: {}
-
 networks:
   monitoring:
     name: monitoring
