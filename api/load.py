@@ -7,7 +7,7 @@ from api.models import ApplicantPrediction
 
 def load_current_data(window_size: int, db_session: Session) -> pd.DataFrame:
     with db_session:
-        # TODO: order_by / created_at
+        # read records, maximum `window_size` entries (sorted by `id`, which is increasing)
         records = db_session.exec(
             select(ApplicantPrediction)
             .order_by(ApplicantPrediction.id.desc())

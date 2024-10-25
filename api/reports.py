@@ -1,3 +1,4 @@
+from io import StringIO
 from evidently import ColumnMapping
 from evidently.metric_preset import (
     ClassificationPreset,
@@ -10,6 +11,8 @@ from api.models import Applicant
 
 
 def get_column_mapping() -> ColumnMapping:
+    # evidently requires a ColumnMapping for its report, to identify the
+    # target column and data types
     return ColumnMapping(
         target="loan_status",
         prediction="loan_status",
@@ -21,35 +24,30 @@ def get_column_mapping() -> ColumnMapping:
 def build_model_performance_report(
     reference_data: pd.DataFrame,
     current_data: pd.DataFrame,
-) -> str:
-    model_performance_report = Report(
-        metrics=[
-            ClassificationPreset(),
-        ]
-    )
+) -> StringIO:
+    model_performance_report = Report(metrics=[ClassificationPreset()])
     model_performance_report.run(
         reference_data=reference_data,
         current_data=current_data,
         column_mapping=get_column_mapping(),
     )
-    # TODO: to IO
-    report_path = "reports/model_performance.html"
-    model_performance_report.save_html(report_path)
+    _file = StringIO()
+    model_performance_report.save_html(_file)
 
-    return report_path
+    return _file
 
 
 def build_target_drift_report(
     reference_data: pd.DataFrame,
     current_data: pd.DataFrame,
-) -> str:
+) -> StringIO:
     target_drift_report = Report(metrics=[TargetDriftPreset()])
     target_drift_report.run(
         reference_data=reference_data,
         current_data=current_data,
         column_mapping=get_column_mapping(),
     )
-    report_path = "reports/target_drift.html"
-    target_drift_report.save_html(report_path)
+    _file = StringIO()
+    target_drift_report.save_html(_file)
 
-    return report_path
+    return _file

@@ -18,11 +18,13 @@ logging.basicConfig(
 )
 
 
+# setup sqlite database
 db_url = "sqlite:///database.db"
 engine = create_engine(db_url, echo=True)
 SQLModel.metadata.create_all(engine)
 
 
+# setup api and load model
 app = FastAPI()
 sess = rt.InferenceSession("models/loan_model.onnx")
 
@@ -43,8 +45,12 @@ def predict(
     background_tasks: BackgroundTasks,
     db_session: Session = Depends(get_db_session),
 ) -> list[Prediction]:
+    # convert request data to onnx compatible format
     ins = applicant.to_onnx()
+    # predict
     label, probabilities = sess.run(None, ins)
+
+    # convert prediction into response and database compatible format
     predicted = []
     for k, v in probabilities[0].items():
         prediction = Prediction(label=k, probability=v)
@@ -60,7 +66,7 @@ def predict(
 @app.get("/monitor-model")
 def monitor_model_performance(
     window_size: int = 3000, db_session: Session = Depends(get_db_session)
-) -> FileResponse:
+) -> HTMLResponse:
     logging.info("Read current data")
     current_data: pd.DataFrame = load_current_data(window_size, db_session)
 
@@ -68,19 +74,19 @@ def monitor_model_performance(
     reference_data = load_reference_data()
 
     logging.info("Build report")
-    report_path: str = build_model_performance_report(
+    report = build_model_performance_report(
         reference_data=reference_data,
         current_data=current_data,
     )
 
     logging.info("Return report as html")
-    return FileResponse(report_path)
+    return HTMLResponse(report.getvalue())
 
 
 @app.get("/monitor-target")
 def monitor_target_drift(
     window_size: int = 3000, db_session: Session = Depends(get_db_session)
-) -> FileResponse:
+) -> HTMLResponse:
     logging.info("Read current data")
     current_data: pd.DataFrame = load_current_data(window_size, db_session)
 
@@ -88,10 +94,10 @@ def monitor_target_drift(
     reference_data = load_reference_data()
 
     logging.info("Build report")
-    report_path: str = build_target_drift_report(
+    report = build_target_drift_report(
         reference_data=reference_data,
         current_data=current_data,
     )
 
     logging.info("Return report as html")
-    return FileResponse(report_path)
+    return HTMLResponse(report.getvalue())
