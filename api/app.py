@@ -2,7 +2,7 @@ import logging
 import pandas as pd
 
 from fastapi import Depends, FastAPI, BackgroundTasks
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse
 
 import onnxruntime as rt
 from sqlmodel import SQLModel, create_engine, Session
