@@ -32,16 +32,18 @@ if __name__ == "__main__":
 
         if clicked_model_performance:
             report_selected = True
-            request_url += f"/monitor-model?window_size={window_size}"
+            request_url += "/monitor-model"
             report_name = "Model performance"
 
         if clicked_target_drift:
             report_selected = True
-            request_url += f"/monitor-target?window_size={window_size}"
+            request_url += "/monitor-target"
             report_name = "Target drift"
 
         if report_selected:
-            resp: requests.Response = requests.get(request_url)
+            resp: requests.Response = requests.get(
+                request_url, params={"window_size": window_size}
+            )
             display_header(report_name, window_size)
             display_report(resp.content)
 

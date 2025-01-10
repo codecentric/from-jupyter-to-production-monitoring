@@ -3,11 +3,8 @@ services:
     build:
       context: api
       dockerfile: Dockerfile
-    image: mlops_monitoring_demo_api:latest
-    container_name: fastapi
+    image: from-jupyter-to-production-monitoring-api:latest
     restart: always
-    volumes:
-      - ./:/home/api
     ports:
       - 5010:5010
     networks:
@@ -17,11 +14,8 @@ services:
     build:
       context: dashboard
       dockerfile: Dockerfile
-    image: mlops_monitoring_demo_dashboard:latest
-    container_name: streamlit
+    image: from-jupyter-to-production-monitoring-dashboard:latest
     restart: always
-    volumes:
-      - ./dashboard:/home/dashboard
     environment:
       - FASTAPI_APP_HOST=fastapi_app
     ports:

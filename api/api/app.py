@@ -26,7 +26,7 @@ SQLModel.metadata.create_all(engine)
 
 # setup api and load model
 app = FastAPI()
-sess = rt.InferenceSession("models/loan_model.onnx")
+sess = rt.InferenceSession("/models/loan_model.onnx")
 
 
 def get_db_session():
@@ -55,9 +55,9 @@ def predict(
     for k, v in probabilities[0].items():
         prediction = Prediction(label=k, probability=v)
         predicted.append(prediction)
-    record = ApplicantPrediction(**applicant.model_dump(), label=int(label[0]))
 
     # Save predictions to database (in the background)
+    record = ApplicantPrediction(**applicant.model_dump(), label=int(label[0]))
     background_tasks.add_task(save_predictions, db_session, record)
 
     return predicted

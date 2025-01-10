@@ -27,6 +27,7 @@ class Applicant(SQLModel):
         for c in self.get_type_fields(float):
             ins[c] = ins[c].astype(np.float32).reshape((1, 1))
         for k in self.get_type_fields(str):
+            # TODO: probably astype() not necessary
             ins[k] = ins[k].astype(object).reshape((1, 1)).astype(object)
 
         return ins

@@ -1,13 +1,11 @@
 FROM python:3.12-slim
 
-# Install Python packages
-COPY requirements.txt /requirements.txt
-RUN pip install --no-cache-dir --ignore-installed -r requirements.txt
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Configure workdir
-WORKDIR /home/dashboard
-# Configure PYTHONPATH environment variable
-ENV PYTHONPATH=/home/dashboard
+COPY . /dashboard
+
+WORKDIR /dashboard
+RUN uv sync --frozen --no-cache
 
 # Launch streamlit application on start up
-CMD ["streamlit", "run", "app.py"]
+CMD ["/dashboard/.venv/bin/streamlit", "run", "app.py"]

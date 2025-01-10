@@ -1,0 +1,12 @@
+[project]
+name = "from-jupyter-to-production-monitoring-api"
+version = "2024.01.09"
+requires-python = ">=3.12"
+
+dependencies = [
+  "evidently",
+  "pandas",
+  "onnxruntime",
+  "sqlmodel",
+  "fastapi[standard]",
+]
