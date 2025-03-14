@@ -1,7 +1,6 @@
-from PIL import Image
 import streamlit as st
 import streamlit.components.v1 as components
-from typing import Text
+from PIL import Image
 
 
 def set_page_container_style() -> None:
@@ -33,7 +32,7 @@ def display_sidebar_header() -> None:
         st.header("")  # add space between logo and selectors
 
 
-def display_header(report_name: Text, window_size: int) -> None:
+def display_header(report_name: str, window_size: int) -> None:
     """Display report header.
 
     Args:
@@ -46,7 +45,7 @@ def display_header(report_name: Text, window_size: int) -> None:
 
 
 @st.cache_data
-def display_report(report: Text) -> Text:
+def display_report(report: str) -> str:
     """Display report.
 
     Args:

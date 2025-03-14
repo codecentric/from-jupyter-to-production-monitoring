@@ -4,12 +4,11 @@ import requests
 import streamlit as st
 
 from utils.ui import (
-    set_page_container_style,
-    display_sidebar_header,
     display_header,
     display_report,
+    display_sidebar_header,
+    set_page_container_style,
 )
-
 
 if __name__ == "__main__":
     # Configure some styles
