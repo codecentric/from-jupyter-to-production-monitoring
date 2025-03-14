@@ -1,11 +1,12 @@
 from io import StringIO
+
+import pandas as pd
 from evidently import ColumnMapping
 from evidently.metric_preset import (
     ClassificationPreset,
     TargetDriftPreset,
 )
 from evidently.report import Report
-import pandas as pd
 
 from api.models import Applicant
 

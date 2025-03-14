@@ -1,5 +1,4 @@
 import pandas as pd
-
 from sqlmodel import Session, select
 
 from api.models import ApplicantPrediction
@@ -9,9 +8,7 @@ def load_current_data(window_size: int, db_session: Session) -> pd.DataFrame:
     with db_session:
         # read records, maximum `window_size` entries (sorted by `id`, which is increasing)
         records = db_session.exec(
-            select(ApplicantPrediction)
-            .order_by(ApplicantPrediction.id.desc())
-            .limit(window_size)
+            select(ApplicantPrediction).order_by(ApplicantPrediction.id.desc()).limit(window_size)
         )
 
         current_data: pd.DataFrame = pd.DataFrame.from_records(

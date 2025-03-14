@@ -1,17 +1,16 @@
 import logging
-import pandas as pd
-
-from fastapi import Depends, FastAPI, BackgroundTasks
-from fastapi.responses import HTMLResponse
+from typing import Annotated
 
 import onnxruntime as rt
-from sqlmodel import SQLModel, create_engine, Session
+import pandas as pd
+from fastapi import BackgroundTasks, Depends, FastAPI
+from fastapi.responses import HTMLResponse
+from sqlmodel import Session, SQLModel, create_engine
 
 from api.load import load_current_data, load_reference_data
-from api.models import Applicant, Prediction, ApplicantPrediction
+from api.models import Applicant, ApplicantPrediction, Prediction
 from api.predictions import save_predictions
 from api.reports import build_model_performance_report, build_target_drift_report
-
 
 logging.basicConfig(
     level=logging.INFO, format="FASTAPI_APP - %(asctime)s - %(levelname)s - %(message)s"
@@ -43,7 +42,7 @@ def index() -> HTMLResponse:
 def predict(
     applicant: Applicant,
     background_tasks: BackgroundTasks,
-    db_session: Session = Depends(get_db_session),
+    db_session: Annotated[Session, Depends(get_db_session)],
 ) -> list[Prediction]:
     # convert request data to onnx compatible format
     ins = applicant.to_onnx()
@@ -65,7 +64,8 @@ def predict(
 
 @app.get("/monitor-model")
 def monitor_model_performance(
-    window_size: int = 3000, db_session: Session = Depends(get_db_session)
+    db_session: Annotated[Session, Depends(get_db_session)],
+    window_size: int = 3000,
 ) -> HTMLResponse:
     logging.info("Read current data")
     current_data: pd.DataFrame = load_current_data(window_size, db_session)
@@ -85,7 +85,8 @@ def monitor_model_performance(
 
 @app.get("/monitor-target")
 def monitor_target_drift(
-    window_size: int = 3000, db_session: Session = Depends(get_db_session)
+    db_session: Annotated[Session, Depends(get_db_session)],
+    window_size: int = 3000,
 ) -> HTMLResponse:
     logging.info("Read current data")
     current_data: pd.DataFrame = load_current_data(window_size, db_session)
