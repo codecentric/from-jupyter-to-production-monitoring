@@ -19,6 +19,6 @@ def load_current_data(window_size: int, db_session: Session) -> pd.DataFrame:
 
 
 def load_reference_data() -> pd.DataFrame:
-    ref_path = "data/reference_data.csv"
+    ref_path = "/data/reference_data.csv"
     ref_data = pd.read_csv(ref_path)
     return ref_data

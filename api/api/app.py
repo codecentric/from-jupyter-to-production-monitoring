@@ -70,6 +70,9 @@ def monitor_model_performance(
     logging.info("Read current data")
     current_data: pd.DataFrame = load_current_data(window_size, db_session)
 
+    if current_data.empty:
+        return HTMLResponse("No data to monitor")
+
     logging.info("Read reference data")
     reference_data = load_reference_data()
 
@@ -90,6 +93,9 @@ def monitor_target_drift(
 ) -> HTMLResponse:
     logging.info("Read current data")
     current_data: pd.DataFrame = load_current_data(window_size, db_session)
+
+    if current_data.empty:
+        return HTMLResponse("No data to monitor")
 
     logging.info("Read reference data")
     reference_data = load_reference_data()
